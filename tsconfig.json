@@ -18,8 +18,10 @@
         "name": "next"
       }
     ],
+    // --- 追加する部分 ---
+    "baseUrl": "src",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

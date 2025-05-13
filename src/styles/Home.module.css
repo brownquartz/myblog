@@ -1,0 +1,92 @@
+/* src/styles/Home.module.css */
+
+/* 全体をグリッドで 1:3 のカラムに分割 */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* サイドバー全体 */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  background: #fff;
+}
+
+/* サイドバー内の各セクション（日付／タグ） */
+.section {
+  /* 下に余白をつける */
+  margin-bottom: 1rem;
+}
+.section:last-child {
+  margin-bottom: 0;
+}
+
+/* セクション同士の境界線を入れたい場合は以下を有効化 */
+/*
+.section + .section {
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+*/
+
+/* セクション見出し */
+.section h2 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* 日付リスト */
+.dateList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.dateList li + li {
+  margin-top: 0.25rem;
+}
+
+/* リンク */
+.link {
+  display: block;
+  color: #1e40af; /* Tailwind の blue-600 相当 */
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+/* メインコンテンツ */
+.main {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  background: #fff;
+}
+
+/* 記事タイトル */
+.postTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+/* 日付表示 */
+.postDate {
+  font-size: 0.75rem;
+  color: #6b7280; /* gray-500 相当 */
+  margin-bottom: 1rem;
+}
+
+/* 記事アイテム間の余白 */
+.postItem + .postItem {
+  margin-top: 1.5rem;
+}
