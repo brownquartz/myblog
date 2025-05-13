@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import Layout from '@/components/Layout'
+import MDXContent from '@/components/MDXContent'
 
 type Props = {
   params: { slug: string }
@@ -44,8 +45,9 @@ export default async function PostPage({ params }: Props) {
           )}
         </aside>
         <main className="col-span-3 border rounded p-4 prose">
-          {/* compileMDX が返す ReactNode をそのまま描画 */}
+          compileMDX が返す ReactNode をそのまま描画
           {content}
+          {/* <MDXContent source={mdxSource} /> */}
         </main>
       </div>
     </Layout>
