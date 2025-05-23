@@ -1,0 +1,191 @@
+/* 全体コンテナはそのまま */
+.posts-container {
+  display: flex;
+  align-items: flex-start;   /* ← これで子要素（サイドバー）が縦に引き伸ばされなくなる */
+  max-width: 1000px;
+  margin: 1rem auto;
+  gap: 2rem;
+}
+
+/* 投稿一覧部分 */
+.posts-wrapper {
+  flex: 1;
+}
+
+.posts-wrapper h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+/* 投稿一覧 */
+.posts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.post-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: #fff;
+}
+
+.post-item:last-child {
+  margin-bottom: 0.5rem;
+}
+
+/* ホバー時の影 */
+.post-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* タイトルの文字サイズ */
+.post-item h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+/* リンク色・装飾 */
+.post-item a {
+  text-decoration: none;
+  color: #007acc;
+}
+
+/* リンクホバー */
+.post-item a:hover {
+  text-decoration: underline;
+}
+
+/* プレビュー本文を小さく（必要なら） */
+.post-item p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #555;
+}
+
+/* タイトルと日付を横並びに */
+.post-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* タイトル */
+.post-item-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+.post-item-header h3 a {
+  text-decoration: none;
+  color: #007acc;
+}
+
+/* 日付 */
+.post-item-date {
+  font-size: 0.85rem; /* タイトルより少し小さめ */
+  color: #000;
+}
+
+/* プレビュー本文（必要なければ削除可） */
+.post-item-preview {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #555;
+}
+
+/* サイドバー（タグボタン） */
+.tag-sidebar {
+  flex: 0 0 200px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+.tag-sidebar h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.tag-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.tag-buttons button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-align: left;
+}
+.tag-buttons button.active {
+  background: #007acc;
+  color: #fff;
+  border-color: #007acc;
+}
+
+.pagination {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+.pagination a {
+  margin: 0 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #007acc;
+  font-size: 0.875rem;
+}
+.pagination a.active {
+  background: #007acc;
+  color: #fff;
+  border-color: #007acc;
+}
+.pagination a:hover {
+  background: #f0f0f0;
+}
+
+.range-info {
+  text-align: right;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}
+
+/* タグボタンコンテナを横並び＆折り返しに */
+.tag-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ボタン幅を固定して、長いタグは省略表示 */
+.tag-buttons button {
+  /* flex: 0 0 auto にして、固定幅ではなく自動幅に */
+  flex: 0 0 auto;
+  /* 左右 padding で余白を確保 */
+  padding: 0.4rem 1rem;
+  /* 必要なら最小幅を設定 */
+  min-width: 4rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  white-space: nowrap;       /* 改行せずに一行で収める */
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.tag-buttons button.active {
+  background: #007acc;
+  color: #fff;
+  border-color: #007acc;
+}
+.tag-buttons button:hover {
+  background: #f0f0f0;
+}

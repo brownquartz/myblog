@@ -1,0 +1,90 @@
+/* PostDetail.css */
+
+/* ヘッダー全体を相対配置 */
+.post-header {
+  position: relative;
+  padding: 1rem 0;
+}
+
+/* タイトルは中央寄せ */
+.post-header h2 {
+  margin: 0;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* 日付はヘッダー右端に */
+.post-header .post-date {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  color: #555;
+}
+
+/* タイトル・日付と本文を切り分ける線 */
+.post-divider {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 0.5rem 0;
+  width: 100%;
+}
+
+/* 本文の余白 */
+.post-content {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* 関連投稿セクション全体 */
+.related-container {
+  margin: 1.5rem 0;
+}
+
+/* 見出し */
+.related-container h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.25rem;
+}
+
+/* リスト本体 */
+.related-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 各アイテム */
+.related-item {
+  margin-bottom: 0.5rem;
+}
+
+/* 最後のアイテムはマージンなし */
+.related-item:last-child {
+  margin-bottom: 0;
+}
+
+/* リンクスタイル */
+.related-item a {
+  text-decoration: none;
+  color: #007acc;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+/* 現在表示中の投稿は太字かつグレーアウト */
+.related-item a.active {
+  font-weight: bold;
+  color: #555;
+  cursor: default;
+}
+
+/* ホバー */
+.related-item a:hover {
+  text-decoration: underline;
+  color: #005ea3;
+}
