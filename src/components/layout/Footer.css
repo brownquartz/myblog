@@ -1,0 +1,11 @@
+/* src/components/Footer.css */
+.footer {
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
+.footer hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 0;
+}
