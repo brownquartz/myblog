@@ -21,8 +21,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/posts" element={<PostsList />} />
-           {/* /posts/1 などの詳細ページ */}
-           <Route path="/posts/:id" element={<PostDetail />} />
+            {/* /posts/1 などの詳細ページ */}
+            <Route path="/posts/:slug" element={<PostDetail />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

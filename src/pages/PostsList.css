@@ -1,15 +1,17 @@
 /* 全体コンテナはそのまま */
 .posts-container {
   display: flex;
-  align-items: flex-start;   /* ← これで子要素（サイドバー）が縦に引き伸ばされなくなる */
-  max-width: 1000px;
-  margin: 1rem auto;
+  align-items: flex-start;
   gap: 2rem;
+  max-width: 800px;     /* サイドバー(約200px) + ギャップ(2rem) + 本文(約600px) を目安に */
+  margin: 1rem auto;       /* ← これで左右中央 */
+  padding: 0 1rem;      /* optional: 両端にちょっと余白 */
 }
 
 /* 投稿一覧部分 */
 .posts-wrapper {
-  flex: 1;
+  flex: 0 1 600px;            /* 最小幅 auto、最大幅 600px */
+  max-width: calc(800px - 200px - 2rem); /* 上の max-width と合わせる */
 }
 
 .posts-wrapper h2 {
@@ -99,11 +101,7 @@
 
 /* サイドバー（タグボタン） */
 .tag-sidebar {
-  flex: 0 0 200px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
+  flex: 0 0 200px;            /* 幅 200px のまま */
 }
 .tag-sidebar h3 {
   margin-top: 0;

@@ -1,53 +1,64 @@
 // src/pages/PostsList.js
-import React,{ useState,useMemo} from 'react';
-import { posts } from '../data/posts';
+import React, { useState, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { usePosts } from '../hooks/usePosts';
 import './PostsList.css';
 
 export default function PostsList() {
-  
-  // 1) タグ絞り込み用のステート
+  // ─── 1. フックは必ず最上段で呼び出す ─────────────────────
+  const posts = usePosts();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTags, setSelectedTags] = useState([]);
 
-  // 2) 全タグのリストを生成
+  // ─── 2. 全タグリスト（postsがnullの間は空配列） ─────────────
   const allTags = useMemo(() => {
-    const tags = posts.flatMap(p => p.tags);
-    return Array.from(new Set(tags)).sort();
-  }, []);
+    if (!posts) return [];
+    return Array.from(new Set(posts.flatMap(p => p.tags))).sort();
+  }, [posts]);
 
-  // 3) タグチェック・解除ハンドラ
+  // ─── 3. AND条件での絞り込み（postsがnullの間は空配列） ────────
+  const filtered = useMemo(() => {
+    if (!posts) return [];
+    if (selectedTags.length === 0) return posts;
+    return posts.filter(p =>
+      selectedTags.every(tag => p.tags.includes(tag))
+    );
+  }, [posts, selectedTags]);
+
+  // ─── 4. ページング計算 ───────────────────────────────────
+  const pageSize = 5;
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const rawPage = parseInt(searchParams.get('page') || '1', 10);
+  const page = Math.min(Math.max(rawPage, 1), totalPages);
+  const start = (page - 1) * pageSize;
+  const pagePosts = filtered.slice(start, start + pageSize);
+
+  // ─── 5. ここで初めて状態に応じた早期リターン ───────────────
+  if (posts === null) {
+    return <p>Loading…</p>;
+  }
+  if (posts.length === 0) {
+    return <p>投稿がありません。</p>;
+  }
+
+  // タグトグル
   const toggleTag = (tag) => {
-    setSelectedTags(prev => 
+    setSelectedTags(prev =>
       prev.includes(tag)
         ? prev.filter(t => t !== tag)
         : [...prev, tag]
     );
+    setSearchParams({ page: '1' });
   };
 
-  // タグでフィルタ→ID降順ソート
-  const sorted = useMemo(() => {
-    const filtered = selectedTags.length === 0
-      ? posts
-      : posts.filter(p =>
-          // 選択したすべてのタグを含む投稿だけを残す
-          selectedTags.every(t => p.tags.includes(t))
-        );
-    return [...filtered].sort((a, b) => b.id - a.id);
-  }, [selectedTags]);
+  // ページ変更
+  const goToPage = p => setSearchParams({ page: String(p) });
 
-  // ページング（省略可能）
-  const [searchParams] = useSearchParams();
-  const page = parseInt(searchParams.get('page'), 10) || 1;
-  const pageSize = 5;
-  const totalPosts = sorted.length;
-  const totalPages = Math.ceil(totalPosts / pageSize);
-  const start = (page - 1) * pageSize;
-  const pagePosts = sorted.slice(start, start + pageSize);
-
-
+  // ─── 6. レンダリング ─────────────────────────────────────
   return (
     <div className="posts-container">
-      {/* ← タグボタンのサイドバー */}
+      {/* ← タグサイドバー */}
       <aside className="tag-sidebar">
         <h3>Tags</h3>
         <div className="tag-buttons">
@@ -63,35 +74,39 @@ export default function PostsList() {
         </div>
       </aside>
 
+      {/* → 投稿一覧 */}
       <div className="posts-wrapper">
+        <h2>Posts 一覧</h2>
         <ul className="posts-list">
-          {pagePosts.map(post => (
-            <li key={post.id} className="post-item">
+          {pagePosts.map(p => (
+            <li key={p.id} className="post-item">
               <div className="post-item-header">
                 <h3>
-                  <Link to={`/posts/${post.id}`}>{post.title}</Link>
+                  <Link to={`/posts/${p.slug}`}>{p.title}</Link>
                 </h3>
-                <span className="post-item-date">{post.writeDate}</span>
+                <span className="post-item-date">{p.writeDate}</span>
               </div>
             </li>
           ))}
         </ul>
-        {/* ページング情報 */}
+
+        {/* 範囲表示 */}
         <div className="range-info">
-          ({start + 1}-{start + pagePosts.length}/{totalPosts})
+          ({start + 1}-{start + pagePosts.length}/{total})
         </div>
+
         {/* ページネーション */}
         <div className="pagination">
           {Array.from({ length: totalPages }, (_, i) => {
             const p = i + 1;
             return (
-              <Link
+              <button
                 key={p}
-                to={`/posts${p === 1 ? '' : `?page=${p}`}`}
                 className={p === page ? 'active' : ''}
+                onClick={() => goToPage(p)}
               >
                 {p}
-              </Link>
+              </button>
             );
           })}
         </div>
