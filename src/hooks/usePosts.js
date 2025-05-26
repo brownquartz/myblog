@@ -6,22 +6,23 @@ export function usePosts() {
   const [posts, setPosts] = useState(null);
 
   useEffect(() => {
-    // src/posts フォルダから .md を一括インポート
+    // src/posts フォルダ内の .md を自動列挙
     const req = require.context('../posts', false, /\.md$/);
-    const keys = req.keys(); // ['./2025-05-23.md', './2025-05-24.md', ...]
+    const keys = req.keys(); // ['./2025-05-23.md', './2025-05-26.md', ...]
 
     const all = keys.map((filename) => {
-      // raw-loader で文字列として読み込まれた Markdown 全文
-      const text = req(filename);
-      const { data, content } = matter(text);
-
+      // raw-loader で文字列として読み込まれた Markdown
+      const raw = req(filename);
+      // gray-matter で front-matter と本文に分割
+      const { data, content } = matter(raw);
       // './2025-05-23.md' → '2025-05-23'
       const slug = filename.replace(/^\.\/(.*)\.md$/, '$1');
 
       return {
-        ...data,       // front-matter の id, title, writeDate, tags など
-        content,       // Markdown 本文
-        slug,          // URL 用のスラッグ
+        // ← ここがポイント！data の各フィールドをスプレッドで展開
+        ...data,     
+        content,     // マークダウン本文
+        slug,        // URL 用のスラッグ
       };
     });
 
