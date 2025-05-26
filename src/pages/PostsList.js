@@ -79,12 +79,12 @@ export default function PostsList() {
         <h2>Posts 一覧</h2>
         <ul className="posts-list">
           {pagePosts.map(p => (
-            <li key={p.id} className="post-item">
+            <li key={p.slug} className="post-item">
               <div className="post-item-header">
                 <h3>
-                  <Link to={`/posts/${p.slug}`}>{p.title}</Link>
+                  <Link to={`/posts/${p.slug}`}>{p.title || p.slug}</Link>
                 </h3>
-                <span className="post-item-date">{p.writeDate}</span>
+                <span className="post-item-date">{p.writeDate || '日付なし'}</span>
               </div>
             </li>
           ))}

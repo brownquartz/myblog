@@ -2,40 +2,31 @@
 
 /* ヘッダー全体を相対配置 */
 .post-header {
-  position: relative;
-  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
-/* タイトルは中央寄せ */
 .post-header h2 {
   margin: 0;
   text-align: center;
-  font-size: 1.5rem;
+  flex: 1;
 }
-
-/* 日付はヘッダー右端に */
-.post-header .post-date {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+.post-date {
   font-size: 0.875rem;
   color: #555;
 }
 
 /* タイトル・日付と本文を切り分ける線 */
 .post-divider {
+  margin: 1rem 0;
   border: none;
   border-top: 1px solid #ccc;
-  margin: 0.5rem 0;
-  width: 100%;
 }
 
 /* 本文の余白 */
 .post-content {
-  padding: 0.5rem 0;
-  font-size: 1rem;
   line-height: 1.6;
+  font-size: 1rem;
 }
 
 /* 関連投稿セクション全体 */

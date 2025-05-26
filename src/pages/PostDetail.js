@@ -1,18 +1,26 @@
 // src/pages/PostDetail.js
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { usePosts } from '../hooks/usePosts';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import './PostDetail.css';            // スタイルを適用
+import { usePosts } from '../hooks/usePosts';
+import './PostDetail.css';
 
 export default function PostDetail() {
-  const { slug } = useParams();                 // 例: "2025-05-23-hajimete-no-tokou"
+  const { slug } = useParams();
   const posts = usePosts();
+  const navigate = useNavigate();
+
+  // 読み込み中
+  if (posts === null) return <p>Loading…</p>;
+  // slug に合う投稿がなかったら一覧へリダイレクト
   const post = posts.find(p => p.slug === slug);
-  if (!post) return <p>Loading or Not Found…</p>;
+  if (!post) {
+    navigate('/posts', { replace: true });
+    return null;
+  }
 
   return (
-    <article className="post-detail">
+    <article className="post-detail" style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div className="post-header">
         <h2>{post.title}</h2>
         <span className="post-date">{post.writeDate}</span>
@@ -23,7 +31,9 @@ export default function PostDetail() {
           {post.content}
         </ReactMarkdown>
       </div>
-      <Link to="/posts">← Posts一覧に戻る</Link>
+      <div style={{ marginTop: '2rem' }}>
+        <Link to="/posts">← Posts一覧に戻る</Link>
+      </div>
     </article>
   );
 }

@@ -6,51 +6,27 @@ export function usePosts() {
   const [posts, setPosts] = useState(null);
 
   useEffect(() => {
-    const base = process.env.PUBLIC_URL || '';
-    const indexUrl = `${base}/posts/index.json`;
+    // src/posts フォルダから .md を一括インポート
+    const req = require.context('../posts', false, /\.md$/);
+    const keys = req.keys(); // ['./2025-05-23.md', './2025-05-24.md', ...]
 
-    console.log('[usePosts] fetching index.json from', indexUrl);
-    fetch(indexUrl)
-      .then(res => {
-        console.log('[usePosts] index.json status', res.status);
-        if (!(res.status >= 200 && res.status < 300) && res.status !== 304) {
-          throw new Error(`index.json fetch failed: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(files => {
-        console.log('[usePosts] index.json files:', files);
-        return Promise.all(
-          files.map(filename => {
-            // ブロックを開いて、ここで filename が使えるようにする
-            const mdUrl = `${base}/posts/${filename}`;
-            console.log('[usePosts] fetching markdown from', mdUrl);
-            return fetch(mdUrl)
-              .then(r => {
-                console.log(`[usePosts] ${filename} status`, r.status);
-                if (!(r.status >= 200 && r.status < 300) && r.status !== 304) {
-                  throw new Error(`${filename} fetch failed: ${r.status}`);
-                }
-                return r.text();
-              })
-              .then(text => {
-                console.log(`[usePosts] raw ${filename}:`, text.slice(0,80), '…');
-                const { data, content } = matter(text);
-                console.log(`[usePosts] front-matter ${filename}:`, data);
-                // 正しくスプレッドして返す
-                return { ...data, content, slug: filename.replace(/\.md$/, '') };
-              });
-          })
-        );
-      })
-      .then(allPosts => {
-        console.log('[usePosts] parsed posts array:', allPosts);
-        setPosts(allPosts.sort((a, b) => b.id - a.id));
-      })
-      .catch(err => {
-        console.error('[usePosts error]', err);
-        setPosts([]);
-      });
+    const all = keys.map((filename) => {
+      // raw-loader で文字列として読み込まれた Markdown 全文
+      const text = req(filename);
+      const { data, content } = matter(text);
+
+      // './2025-05-23.md' → '2025-05-23'
+      const slug = filename.replace(/^\.\/(.*)\.md$/, '$1');
+
+      return {
+        ...data,       // front-matter の id, title, writeDate, tags など
+        content,       // Markdown 本文
+        slug,          // URL 用のスラッグ
+      };
+    });
+
+    // id 降順でソートして state にセット
+    setPosts(all.sort((a, b) => b.id - a.id));
   }, []);
 
   return posts;
