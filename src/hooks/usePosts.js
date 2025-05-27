@@ -6,15 +6,12 @@ export function usePosts() {
   const [posts, setPosts] = useState(null);
 
   useEffect(() => {
-    // const req = require.context('../posts', false, /\.md$/);
     // 「!!」プレフィックスで、raw-loader を強制適用します
     const req = require.context(
       '!!raw-loader?esModule=false!../posts',
       false,
       /\.md$/
     );
-    // const req = require.context('../posts', false, /\.md$/);
-
 
     let keys = req.keys();
     // ── A: 先頭が "./_" のファイルは除外 ──
@@ -29,7 +26,7 @@ export function usePosts() {
     const normalKeys   = keys.filter(key => !key.startsWith(priorityPrefix));
 
     priorityKeys.sort(); // 優先表示ファイルをソート
-    normalKeys.sort();   // 通常ファイルもソート
+    normalKeys.sort((a, b) => b.localeCompare(a));   // 通常ファイルもソート
 
     const orderedKeys  = [...priorityKeys, ...normalKeys];
 
@@ -44,7 +41,6 @@ export function usePosts() {
       return { ...data, content, slug };
     });
 
-    // setPosts(all.sort((a, b) => b.id - a.id));
     setPosts(all);
   }, []);
 
