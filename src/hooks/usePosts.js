@@ -6,27 +6,28 @@ export function usePosts() {
   const [posts, setPosts] = useState(null);
 
   useEffect(() => {
-    // src/posts フォルダ内の .md を自動列挙
-    const req = require.context('../posts', false, /\.md$/);
-    const keys = req.keys(); // ['./2025-05-23.md', './2025-05-26.md', ...]
+    // const req = require.context('../posts', false, /\.md$/);
+    // 「!!」プレフィックスで、raw-loader を強制適用します
+    const req = require.context(
+      '!!raw-loader?esModule=false!../posts',
+      false,
+      /\.md$/
+    );
+    let keys = req.keys();
+    // ── A: 先頭が "./_" のファイルは除外 ──
+    keys = keys.filter(key => !key.startsWith('./_'));
 
     const all = keys.map((filename) => {
-      // raw-loader で文字列として読み込まれた Markdown
-      const raw = req(filename);
-      // gray-matter で front-matter と本文に分割
-      const { data, content } = matter(raw);
-      // './2025-05-23.md' → '2025-05-23'
-      const slug = filename.replace(/^\.\/(.*)\.md$/, '$1');
+      const rawModule = req(filename);
+      // rawModule が { default: '…' } の場合は default を、そうでなければ直に rawModule を使う
+      const raw = typeof rawModule === 'string' ? rawModule : rawModule.default;
 
-      return {
-        // ← ここがポイント！data の各フィールドをスプレッドで展開
-        ...data,     
-        content,     // マークダウン本文
-        slug,        // URL 用のスラッグ
-      };
+      const { data, content } = matter(raw);
+
+      const slug = filename.replace(/^\.\/(.*)\.md$/, '$1');
+      return { ...data, content, slug };
     });
 
-    // id 降順でソートして state にセット
     setPosts(all.sort((a, b) => b.id - a.id));
   }, []);
 
