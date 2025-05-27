@@ -7,7 +7,7 @@ module.exports = {
       // ─── ① まず .md を file-loader の対象から外す ───
       // CRA の file-loader ルール(oneOf)を探し、.md を除外します
       config.module.rules.forEach(rule => {
-        if (rule.oneOf) {
+        if (!rule.oneOf)  return;
           rule.oneOf.forEach(loader => {
             if (
               loader.loader?.includes('file-loader') &&
@@ -16,8 +16,7 @@ module.exports = {
               loader.exclude.push(/\.md$/);
             }
           });
-        }
-      });
+        });
 
       // ─── ② 先頭に raw-loader を挿入 ───
       // これで require.context すると純粋なテキストが返ってくるようになります
