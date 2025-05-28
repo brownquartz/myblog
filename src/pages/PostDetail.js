@@ -2,6 +2,7 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm     from 'remark-gfm'
 import { usePosts } from '../hooks/usePosts';
 import './PostDetail.css';
 
@@ -27,7 +28,7 @@ export default function PostDetail() {
       </div>
       <hr className="post-divider" />
       <div className="post-content">
-        <ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {post.content}
         </ReactMarkdown>
       </div>
