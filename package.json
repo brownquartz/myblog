@@ -21,6 +21,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "serve:json": "json-server --watch db.json --port 4000",
     "test": "craco test",
     "eject": "react-scripts eject"
   },
@@ -43,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "json-server": "^1.0.0-beta.3",
     "raw-loader": "^4.0.2"
   }
 }

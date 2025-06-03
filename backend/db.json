@@ -1,0 +1,19 @@
+
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "はじめての投稿",
+      "writeDate": "2025-05-23",
+      "tags": ["React", "JavaScript"],
+      "content": "これはサンプルの投稿です。"
+    },
+    {
+      "id": 2,
+      "title": "React Router を使ってみた",
+      "writeDate": "2025-05-24",
+      "tags": ["React", "Router"],
+      "content": "投稿コンテンツの本文がここに入ります。"
+    }
+  ]
+}

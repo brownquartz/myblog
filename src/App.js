@@ -1,11 +1,6 @@
-import './App.css';
+// src/App.js
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import PostsList from './pages/PostsList';
@@ -19,10 +14,16 @@ export default function App() {
         <Header />
         <main style={{ flex: 1, padding: '2rem' }}>
           <Routes>
+            {/* ホーム画面 */}
             <Route path="/" element={<Home />} />
+
+            {/* Posts一覧 */}
             <Route path="/posts" element={<PostsList />} />
-            {/* /posts/1 などの詳細ページ */}
-            <Route path="/posts/:slug" element={<PostDetail />} />
+
+            {/* 個別記事詳細 (/posts/:id) */}
+            <Route path="/posts/:id" element={<PostDetail />} />
+
+            {/* 存在しないパスへのフォールバック（ホームに戻すなど） */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
