@@ -2,26 +2,30 @@
 import { useState, useEffect } from 'react';
 
 export function usePosts() {
-  const [posts, setPosts] = useState(null);
+  const [posts, setPosts] = useState(null);  // null → "まだ読み込み中" を意味する
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // バックエンドが localhost:4000 で動いている場合
-    fetch('http://localhost:4000/api/posts')
+    // バックエンドに GET /api/posts を投げる
+    fetch('/api/posts')
       .then((res) => {
         if (!res.ok) {
-          throw new Error('記事一覧の取得に失敗しました');
+          throw new Error(`Network response was not OK (status ${res.status})`);
         }
         return res.json();
       })
       .then((data) => {
-        // data は [{ id, title, writeDate, tags }, ...] の配列
+        // data はバックエンドから返ってきた JSON の配列
+        // (例: [ {id:1, title:"…", writeDate:"…", tags:[…], content:"…"}, … ])
         setPosts(data);
       })
       .catch((err) => {
-        console.error(err);
-        setPosts([]); // エラーでも空配列にしておく
+        console.error('[usePosts] fetch error:', err);
+        setError(err);
+        setPosts([]); // エラー時でも空配列を返して「投稿なし」扱いにする
       });
   }, []);
 
-  return posts; // null → ローディング中、[] → 記事なし、それ以外 → 記事配列
+  // 帰り値として { posts, error } の形を返しても良いですが、ここではシンプルに posts のみ
+  return { posts, error };
 }
