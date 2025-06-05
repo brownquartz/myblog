@@ -7,33 +7,43 @@ export default function NewPost() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [writeDate, setWriteDate] = useState('');
-  const [tags, setTags] = useState('');     // 例: カンマ区切りで入力
+  const [tags, setTags] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // バリデーション簡易チェック
+    // バリデーション（例）
     if (!title.trim()) {
       setError('タイトルを入力してください');
       return;
     }
+
+    // localStorage からトークンを取得
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('トークンがありません。ログインしてください。');
+      return;
+    }
+
     try {
       const res = await fetch('/api/posts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,  // ← ここがポイント
+        },
         body: JSON.stringify({
           title: title.trim(),
           writeDate: writeDate.trim() || null,
           tags: tags.split(',').map(s => s.trim()),
           content: content.trim(),
-        })
+        }),
       });
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || '投稿の作成に失敗しました');
       }
-      // 作成に成功したら記事一覧ページに戻る
       navigate('/posts');
     } catch (err) {
       console.error('NewPost submit error:', err);
@@ -55,7 +65,7 @@ export default function NewPost() {
             className="posts-form__input"
             value={title}
             onChange={e => setTitle(e.target.value)}
-            placeholder="例：20250604勉強"
+            placeholder="例：20250605勉強"
           />
         </div>
 
@@ -78,7 +88,7 @@ export default function NewPost() {
             className="posts-form__input"
             value={tags}
             onChange={e => setTags(e.target.value)}
-            placeholder="例: React, JavaScript, Grid"
+            placeholder="例: SQL, サブクエリ, join"
           />
         </div>
 

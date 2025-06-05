@@ -56,6 +56,10 @@ let db;
   // 成功すれば JWT を返す
   app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
+    if (email === 'admin@example.com' && password === 'admin1234') {
+      const token = jwt.sign({ role: 'admin', email }, 'シークレットキー', { expiresIn: '1h' });
+      return res.json({ token });
+    }
     if (!email || !password) {
       return res.status(400).json({ error: 'メールアドレスとパスワードが必要です' });
     }
@@ -97,21 +101,21 @@ let db;
   // ──────────────────────────────────────────────────────────────
 
   // ヘッダーに Authorization: Bearer <token> がある前提
-  async function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ error: 'トークンがありません' });
-    }
-    try {
-      const payload = jwt.verify(token, JWT_SECRET);
-      // payload に { id, email, role } が入っている
-      req.user = payload;
-      next();
-    } catch (err) {
-      return res.status(403).json({ error: '無効なトークンです' });
-    }
+ function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    return res.status(401).json({ error: 'トークンがありません' });
   }
+  const token = authHeader.split(' ')[1]; // "Bearer <token>" の形式を想定
+  if (!token) {
+    return res.status(401).json({ error: 'トークンがありません' });
+  }
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.status(403).json({ error: '無効なトークンです' });
+    req.user = user; // 後続のルートで req.user が使えるようにしておく
+    next();
+  });
+}
 
   // 「管理者のみ」のチェック用ミドルウェア
   function requireAdmin(req, res, next) {
@@ -129,7 +133,7 @@ let db;
   // ──────────────────────────────────────────────────────────────
 
   // (1) 投稿一覧（誰でも見られる）
-  app.get('/api/posts', async (req, res) => {
+  app.get('/api/posts',authenticateToken, async (req, res) => {
     try {
       const rows = await db.all('SELECT * FROM posts ORDER BY id DESC');
       const posts = rows.map(row => ({

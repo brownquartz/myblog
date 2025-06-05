@@ -14,7 +14,7 @@ export default function EditPost() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // マウント時に記事情報をフェッチし、フォームに初期値をセット
+  // マウント時に記事を取得してフォームにセット
   useEffect(() => {
     fetch(`/api/posts/${id}`)
       .then(res => {
@@ -24,7 +24,7 @@ export default function EditPost() {
       .then(json => {
         setTitle(json.title);
         setWriteDate(json.writeDate || '');
-        setTags(json.tags.join(', ')); // 配列をカンマ区切り文字列に変換
+        setTags(json.tags.join(', '));
         setContent(json.content);
         setLoading(false);
       })
@@ -35,22 +35,33 @@ export default function EditPost() {
       });
   }, [id]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     if (!title.trim()) {
       setError('タイトルを入力してください');
       return;
     }
+
+    // トークンの取り出し
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('トークンがありません。ログインしてください。');
+      return;
+    }
+
     try {
       const res = await fetch(`/api/posts/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,  // ← ここも同じ
+        },
         body: JSON.stringify({
           title: title.trim(),
           writeDate: writeDate.trim() || null,
           tags: tags.split(',').map(s => s.trim()),
           content: content.trim(),
-        })
+        }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -79,7 +90,7 @@ export default function EditPost() {
     <article className="posts-form">
       <h2>記事編集</h2>
       <form onSubmit={handleSubmit}>
-        {/* 上とほぼ同じ入力フィールド */}
+        {/* タイトル */}
         <div className="posts-form__group">
           <label htmlFor="title">タイトル</label>
           <input
@@ -90,6 +101,8 @@ export default function EditPost() {
             onChange={e => setTitle(e.target.value)}
           />
         </div>
+
+        {/* 日付 */}
         <div className="posts-form__group">
           <label htmlFor="writeDate">日付</label>
           <input
@@ -100,6 +113,8 @@ export default function EditPost() {
             onChange={e => setWriteDate(e.target.value)}
           />
         </div>
+
+        {/* タグ */}
         <div className="posts-form__group">
           <label htmlFor="tags">タグ (カンマ区切り)</label>
           <input
@@ -110,6 +125,8 @@ export default function EditPost() {
             onChange={e => setTags(e.target.value)}
           />
         </div>
+
+        {/* 本文 (Markdown) */}
         <div className="posts-form__group">
           <label htmlFor="content">本文 (Markdown)</label>
           <textarea
@@ -120,6 +137,8 @@ export default function EditPost() {
             onChange={e => setContent(e.target.value)}
           />
         </div>
+
+        {/* ボタン */}
         <div className="posts-form__buttons">
           <button type="submit" className="posts-form__btn posts-form__btn--primary">
             保存
