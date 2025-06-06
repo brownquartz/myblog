@@ -1,66 +1,41 @@
-// src/pages/PostsList.js
-import React, { useContext, useEffect, useState } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
-import './PostsList.css';
+// src/pages/PostsList.js の例
+import React, { useEffect, useState } from 'react';
+import api from '../api/api'; // axios インスタンス
 
-export default function PostsList() {
+function PostsList() {
   const [posts, setPosts] = useState([]);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    // ① localStorage からログイン時に保存したトークンを取り出す
-    const token = localStorage.getItem('token');
-    console.log('PostsList 用 token=', token);
-
-    // ② トークンがなければエラー表示して終わり
-    if (!token) {
-      setError('トークンがありません');
-      return;
-    }
-
-    // ③ トークンをヘッダーに載せて GET /api/posts を叩く
-    fetch('/api/posts', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,  // ← ここがポイント
-      },
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          // 401 や 403 なら、サーバーから返ってくる JSON にエラーメッセージがあるはず
-          const err = await res.json();
-          throw new Error(err.error || '投稿一覧の取得に失敗しました');
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setPosts(data);
-      })
-      .catch((err) => {
+    (async () => {
+      try {
+        // もし proxy を使っているなら '/api/posts'、
+        // 使っていないなら 'http://localhost:5000/api/posts' と書く
+        const response = await api.get('/posts', {
+          headers: {
+            Authorization: `Bearer ${token}`   // token が正しく入っているか要確認
+          }
+        });
+        setPosts(response.data);
+      } catch (err) {
         console.error(err);
-        setError(err.message);
-      });
-  }, []);
+        // err.response?.data?.message が 'Token invalid' になっていないか確認
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [token]);
 
-  if (error) {
-    return <p style={{ color: 'red' }}>Error: {error}</p>;
-  }
-  if (!posts) {
-    return <p>Loading...</p>;
-  }
+  if (loading) return <div>Loading…</div>;
 
   return (
     <div>
-      <h2>Posts 一覧</h2>
-      <ul>
-        {posts.map((p) => (
-          <li key={p.id}>
-            {p.title} ({p.writeDate})
-          </li>
-        ))}
-      </ul>
+      {posts.map(post => (
+        <div key={post.id}>{post.title}</div>
+      ))}
     </div>
   );
 }
+
+export default PostsList;
