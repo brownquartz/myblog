@@ -11,18 +11,19 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/login', {  // ← ここに注意！
+      // ここが正しくバックエンドのエンドポイント "/api/login" を指しているかチェック！
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      // サーバーがJSONを返してくれていればここで OK
+      // レスポンスが JSON で返ってきているか
       const data = await res.json();
       if (!res.ok) {
-        // もし 401 等であれば data.error に何か入っている想定
+        // 401 な場合などは data.error にメッセージが入っている想定
         throw new Error(data.error || 'ログインに失敗しました');
       }
-      // JWTを localStorage に保存
+      // 正常にトークンが返ってきたら localStorage に保存するなど
       localStorage.setItem('token', data.token);
       navigate('/posts');
     } catch (err) {

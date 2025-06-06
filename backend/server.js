@@ -6,15 +6,21 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+dotenv.config();
+console.log('【DEBUG】JWT_SECRET =', process.env.JWT_SECRET);
 const app = express();
 const PORT = 4000;
 
 // JWT 用のシークレットキー（実運用ではもっと複雑なものを環境変数で管理してください）
-const JWT_SECRET = 'ここは強固なランダム文字列に置き換えてください';
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret';
+
+app.use(bodyParser.json());
 
 let db;
 
@@ -54,7 +60,7 @@ let db;
   // --- POST /api/auth/login ---
   // body に { email, password } を受け取り、照合し、
   // 成功すれば JWT を返す
-  app.post('/api/auth/login', async (req, res) => {
+  app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     if (email === 'admin@example.com' && password === 'admin1234') {
       const token = jwt.sign({ role: 'admin', email }, 'シークレットキー', { expiresIn: '1h' });
@@ -91,7 +97,7 @@ let db;
   // --- POST /api/auth/logout ---
   // JWT の場合、基本的にはクライアント側がトークンを破棄すればログアウト完了なので、
   // 簡易的に success を返すだけでも OK です。ブラックリストを作るなら別途対応。
-  app.post('/api/auth/logout', (req, res) => {
+  app.post('/api/logout', (req, res) => {
     // クライアント側でトークンを捨ててもらうだけで OK
     return res.json({ message: 'ログアウトしました' });
   });
@@ -100,19 +106,26 @@ let db;
   // ③ JWT を検証するミドルウェアを定義
   // ──────────────────────────────────────────────────────────────
 
-  // ヘッダーに Authorization: Bearer <token> がある前提
- function authenticateToken(req, res, next) {
+// 認証ミドルウェア
+function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
-    return res.status(401).json({ error: 'トークンがありません' });
+    return res.status(401).json({ error: 'Token not provided' });
   }
-  const token = authHeader.split(' ')[1]; // "Bearer <token>" の形式を想定
-  if (!token) {
-    return res.status(401).json({ error: 'トークンがありません' });
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2) {
+    return res.status(401).json({ error: 'Token malformed' });
   }
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.status(403).json({ error: '無効なトークンです' });
-    req.user = user; // 後続のルートで req.user が使えるようにしておく
+  const [scheme, token] = parts;
+  if (!/^Bearer$/i.test(scheme)) {
+    return res.status(401).json({ error: 'Token malformed' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Token invalid' });
+    }
+    req.user = decoded; // 以降、req.user を使えます
     next();
   });
 }
@@ -133,9 +146,9 @@ let db;
   // ──────────────────────────────────────────────────────────────
 
   // (1) 投稿一覧（誰でも見られる）
-  app.get('/api/posts',authenticateToken, async (req, res) => {
+  app.get('/api/posts',authenticateToken, (req, res) => {
     try {
-      const rows = await db.all('SELECT * FROM posts ORDER BY id DESC');
+      const rows = db.all('SELECT * FROM posts ORDER BY id DESC');
       const posts = rows.map(row => ({
         id: row.id,
         title: row.title,

@@ -15,29 +15,31 @@ export default function PostDetail() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // id（slug） が取得できてから fetch をかける
-    if (!id) {
-      setError('ID が不正です');
-      setLoading(false);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('トークンがありません');
       return;
     }
 
     // バックエンドの API エンドポイントを叩く
-    fetch(`/api/posts/${id}`)
-      .then(res => {
+    fetch(`/api/posts/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then(async (res) => {
         if (!res.ok) {
-          throw new Error(`記事が見つかりません (${res.status})`);
+          const err = await res.json();
+          throw new Error(err.error || '投稿を取得できませんでした');
         }
         return res.json();
       })
-      .then(json => {
-        setPost(json);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('PostDetail fetch error:', err);
+      .then((data) => setPost(data))
+      .catch((err) => {
+        console.error(err);
         setError(err.message);
-        setLoading(false);
       });
   }, [id]);
 
