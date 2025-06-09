@@ -113,28 +113,17 @@ let db;
 
 // 認証ミドルウェア
 function authenticateToken(req, res, next) {
-  console.log('[VERIFY] header    =', req.headers['authorization']);
   console.log('[VERIFY] JWT_SECRET=', process.env.JWT_SECRET);
-  console.log('【DEBUG】got Authorization header:', req.headers['authorization']);
-  const authHeader = req.headers['authorization'];
-  if (!authHeader) {
-    return res.status(401).json({ error: 'Token not provided' });
-  }
-  const parts = authHeader.split(' ');
-  if (parts.length !== 2) {
-    return res.status(401).json({ error: 'Token malformed' });
-  }
-  const [scheme, token] = parts;
-  if (!/^Bearer$/i.test(scheme)) {
-    return res.status(401).json({ error: 'Token malformed' });
-  }
-
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+  console.log('[VERIFY] header   =', req.headers.authorization);
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ error: 'Token not provided' });
+  const [, token] = authHeader.split(' ');
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       console.log('[VERIFY] jwt.verify error:', err.name, err.message);
       return res.status(401).json({ error: 'Token invalid' });
     }
-    req.user = decoded; // 以降、req.user を使えます
+    req.user = decoded;
     next();
   });
 }

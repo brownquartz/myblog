@@ -1,18 +1,20 @@
 // src/components/layout/Layout.js
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Header from './Header';     // もともとあった Header コンポーネント
-import Footer from './Footer'; // もともとあった Footer コンポーネント
-import './Layout.css';  // サイドバーやヘッダー用の CSS をここで読み込む
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import Header from './Header';
+import Footer from './Footer';
 
-export default function Layout({ children }) {
+export default function Layout() {
   return (
-    <div className="layout">
+    <>
       <Header />
-      <main className="layout__content">
-        {children}
+
+      {/* Outlet が /posts で PostsList を表示 */}
+      <main>
+        <Outlet />
       </main>
+
       <Footer />
-    </div>
+    </>
   );
 }
