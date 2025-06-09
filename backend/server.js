@@ -15,7 +15,11 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 console.log('【DEBUG】JWT_SECRET =', process.env.JWT_SECRET);
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+  console.log(`Backend listening on http://localhost:${PORT}`);
+});
 
 // JWT 用のシークレットキー（実運用ではもっと複雑なものを環境変数で管理してください）
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret';
@@ -108,6 +112,7 @@ let db;
 
 // 認証ミドルウェア
 function authenticateToken(req, res, next) {
+  console.log('【DEBUG】got Authorization header:', req.headers['authorization']);
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
     return res.status(401).json({ error: 'Token not provided' });
@@ -272,7 +277,7 @@ function authenticateToken(req, res, next) {
   // ──────────────────────────────────────────────────────────────
   // ⑤ サーバー起動
   // ──────────────────────────────────────────────────────────────
-  app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-  });
+  // app.listen(PORT, () => {
+  //   console.log(`Server is listening on port ${PORT}`);
+  // });
 })();

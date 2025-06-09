@@ -1,41 +1,40 @@
-// src/pages/PostsList.js の例
+// src/pages/PostsList.js
 import React, { useEffect, useState } from 'react';
-import api from '../api/api'; // axios インスタンス
+import api from '../api/api';
 
-function PostsList() {
+export default function PostsList() {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem('token');
-
   useEffect(() => {
     (async () => {
+      // 1) localStorage からトークンを取ってくる
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.warn('token がありません → /login へ飛ばす');
+        // navigate('/login') など
+        return;
+      }
+
       try {
-        // もし proxy を使っているなら '/api/posts'、
-        // 使っていないなら 'http://localhost:5000/api/posts' と書く
-        const response = await api.get('/posts', {
+        // 2) Authorization ヘッダー付きでリクエスト
+        const res = await api.get('/posts', {
           headers: {
-            Authorization: `Bearer ${token}`   // token が正しく入っているか要確認
+            Authorization: `Bearer ${token}`,  // ← 必ずここを付ける
           }
         });
-        setPosts(response.data);
+        setPosts(res.data);
       } catch (err) {
-        console.error(err);
-        // err.response?.data?.message が 'Token invalid' になっていないか確認
-      } finally {
-        setLoading(false);
+        console.error('PostsList axios error:', err.response?.data || err.message);
+        if (err.response?.status === 401) {
+          // トークン無効 or 期限切れ
+          alert('セッションが無効です。再ログインしてください。');
+          // logout(); navigate('/login'); など
+        }
       }
     })();
-  }, [token]);
-
-  if (loading) return <div>Loading…</div>;
-
+  }, []);
   return (
-    <div>
-      {posts.map(post => (
-        <div key={post.id}>{post.title}</div>
-      ))}
-    </div>
+    <ul>
+      {posts.map(p => <li key={p.id}>{p.title}</li>)}
+    </ul>
   );
 }
-
-export default PostsList;
