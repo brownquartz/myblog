@@ -1,11 +1,17 @@
-// src/api/api.js の例
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',   // proxy を使っているならこれだけで OK
-  headers: {
-    'Content-Type': 'application/json'
+  baseURL: '/api',
+  headers: {'Content-Type':'application/json'}
+});
+
+// リクエスト前に localStorage からトークンを載せる
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+  return config;
 });
 
 export default api;

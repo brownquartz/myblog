@@ -65,6 +65,7 @@ let db;
   // body に { email, password } を受け取り、照合し、
   // 成功すれば JWT を返す
   app.post('/api/login', async (req, res) => {
+    console.log('[LOGIN] JWT_SECRET =', process.env.JWT_SECRET);
     const { email, password } = req.body;
     if (email === 'admin@example.com' && password === 'admin1234') {
       const token = jwt.sign({ role: 'admin', email }, 'シークレットキー', { expiresIn: '1h' });
@@ -112,6 +113,8 @@ let db;
 
 // 認証ミドルウェア
 function authenticateToken(req, res, next) {
+  console.log('[VERIFY] header    =', req.headers['authorization']);
+  console.log('[VERIFY] JWT_SECRET=', process.env.JWT_SECRET);
   console.log('【DEBUG】got Authorization header:', req.headers['authorization']);
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
@@ -128,6 +131,7 @@ function authenticateToken(req, res, next) {
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
+      console.log('[VERIFY] jwt.verify error:', err.name, err.message);
       return res.status(401).json({ error: 'Token invalid' });
     }
     req.user = decoded; // 以降、req.user を使えます
