@@ -1,14 +1,14 @@
+// src/index.js
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import { createRoot } from 'react-dom/client';  // ← react-dom/client からインポート
 import App from './App';
-import { AuthProvider } from './contexts/AuthContext';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const container = document.getElementById('root');
+// createRoot(container) でルートをつくり…
+const root = createRoot(container);
+// そこに <App> をレンダーします
 root.render(
-  <AuthProvider>
+  <React.StrictMode>
     <App />
-  </AuthProvider>
+  </React.StrictMode>
 );
-
-
