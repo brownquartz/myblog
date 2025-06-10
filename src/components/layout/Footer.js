@@ -1,12 +1,12 @@
-// src/components/Footer.js
+// src/components/layout/Footer.js
 import React from 'react';
-import './Footer.css';  // 先ほど作ったCSSを読み込み
+import './Footer.css';
 
 export default function Footer() {
   return (
     <footer className="footer">
       <hr />
-      {/* 必要ならここにコピーライトやリンク等を追加 */}
+      © {new Date().getFullYear()} my-blog
     </footer>
   );
 }

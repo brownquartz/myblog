@@ -99,9 +99,24 @@
   color: #555;
 }
 
+/* post-item-tags のスタイル */
+.post-item-tags {
+  margin-top: 0.5rem;
+}
+
+.post-tag {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  background: #f0f0f0;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #333;
+}
+
 /* サイドバー（タグボタン） */
 .tag-sidebar {
-  flex: 0 0 200px;            /* 幅 200px のまま */
+  flex: 0 0 400px;            /* 幅 400px のまま */
 }
 .tag-sidebar h3 {
   margin-top: 0;

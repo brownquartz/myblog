@@ -10,7 +10,7 @@ export default function App() {
       <Routes>
         {/* Layout を使うルート */}
         <Route path="/" element={<Layout />}>
-          <Route index        element={<Navigate to="posts" replace />} />
+          <Route index        element={<Navigate to="" replace />} />
           <Route path="posts" element={<PostsList />} />
           <Route path="posts/:id" element={<PostDetail />} />
         </Route>

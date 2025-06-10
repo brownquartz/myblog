@@ -80,3 +80,16 @@
   background-color: #f0f0f0;
   color: #000;
 }
+.header-auth {
+  position: absolute;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+.auth {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  color: #333;
+}

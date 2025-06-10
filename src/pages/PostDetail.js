@@ -1,21 +1,33 @@
- import React from 'react';
- import { useParams } from 'react-router-dom';
- import { usePosts } from '../hooks/usePosts';
- import ReactMarkdown from 'react-markdown';
- import remarkGfm from 'remark-gfm';
+// src/pages/PostDetail.js
+import React, { useEffect, useState } from 'react';
+import api from '../api/api';
+import { useParams, Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
- export default function PostDetail() {
-   const { id } = useParams();
-   const posts = usePosts();
-   const post = posts.find(p => p.id === id);
-   if (!post) return <div>Not found</div>;
+export default function PostDetail() {
+  const { id } = useParams();
+  const [post, setPost] = useState(null);
 
-   return (
-     <article>
-       <h1>{post.title}</h1>
-       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-         {post.content}
-       </ReactMarkdown>
-     </article>
-   );
- }
+  useEffect(() => {
+    api.get(`/posts/${id}`)
+      .then(res => setPost(res.data))
+      .catch(err => console.error('Failed to load post:', err));
+  }, [id]);
+
+  if (!post) return <div>Loading…</div>;
+
+  return (
+    <article style={{ padding: 20 }}>
+      <h1>{post.title}</h1>
+      <p style={{ color: '#666' }}>{post.writeDate}</p>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {post.content}
+      </ReactMarkdown>
+      
+      <p>
+        <Link to="/posts">← Back to list</Link>
+      </p>
+    </article>
+  );
+}
