@@ -38,6 +38,34 @@ export default function PostsList() {
 
   return (
     <div className="posts-container">
+      <div className="posts-wrapper">
+        <h2>Posts List</h2>
+        <ul className="posts-list">
+          {filteredPosts.map(post => (
+            <li className="post-item" key={post.id}>
+              <div className="post-item-header">
+                <h3>
+                  <Link to={`/posts/${post.id}`}>{post.title}</Link>
+                </h3>
+                <span className="post-item-date">{post.writeDate}</span>
+              </div>
+              <div>
+                {post.content
+                  ? <span>{post.content.slice(0, 100) + '...' }</span> : ''}
+
+              </div>
+              {/* <div className="post-item-tags">
+                {(post.tags || []).map(tag => (
+                  <span key={tag} className="post-tag">
+                    #{tag}
+                  </span>
+                ))}
+              </div> */}
+            </li>
+          ))}
+        </ul>
+      </div>
+      
       <aside className="tag-sidebar">
         <h3>Tags</h3>
         <div className="tag-buttons">
@@ -61,29 +89,6 @@ export default function PostsList() {
           ))}
         </div>
       </aside>
-
-      <div className="posts-wrapper">
-        <h2>Posts List</h2>
-        <ul className="posts-list">
-          {filteredPosts.map(post => (
-            <li className="post-item" key={post.id}>
-              <div className="post-item-header">
-                <h3>
-                  <Link to={`/posts/${post.id}`}>{post.title}</Link>
-                </h3>
-                <span className="post-item-date">{post.writeDate}</span>
-              </div>
-              <div className="post-item-tags">
-                {(post.tags || []).map(tag => (
-                  <span key={tag} className="post-tag">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }
