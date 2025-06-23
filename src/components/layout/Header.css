@@ -12,6 +12,16 @@
   z-index: 1000;
 }
 
+.header-logo {
+  flex: 1;
+  text-align: center;
+}
+.header-auth {
+  flex: 0 0 auto;
+  position: absolute;
+  right: 2rem;
+}
+
 /* ハンバーガーアイコン */
 .hamburger {
   position: absolute;
@@ -87,9 +97,16 @@
   gap: 0.5rem;
 }
 .auth {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #007bff;
   border: none;
-  background: none;
+  border-radius: 4px;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  color: #333;
+  transition: background-color 0.2s;
+}
+.auth:hover {
+  background-color: #0056b3;
 }

@@ -1,12 +1,14 @@
 // src/pages/PostsList.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import api from '../api/api';
 import { Link } from 'react-router-dom';
 import './PostsList.css';
+import { AuthContext } from '../contexts/AuthContext';
 
 export default function PostsList() {
   const [posts, setPosts] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const { user } = useContext(AuthContext);
   // 非表示にしたいタイトルのリスト
   const HIDDEN_TITLES = ['Markdown チートシート'];
 
@@ -40,7 +42,16 @@ export default function PostsList() {
     <div className="posts-container">
       <div className="posts-wrapper">
         <h2>Posts List</h2>
+        {/* 管理者だけに表示される「新規投稿」ボタン */}
+          {user?.role === 'admin' && (
+            <div className="create-post-button">
+              <Link to="/posts/new">
+                <button>新規投稿を作成</button>
+              </Link>
+            </div>
+          )}
         <ul className="posts-list">
+          
           {filteredPosts.map(post => (
             <li className="post-item" key={post.id}>
               <div className="post-item-header">

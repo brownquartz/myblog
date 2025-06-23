@@ -21,6 +21,26 @@
   font-size: 1.2rem;
 }
 
+/* 管理者用「新規投稿」ボタン */
+.create-post-button {
+  text-align: right;
+  margin: 1rem 0;
+}
+.create-post-button button {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.create-post-button button:hover {
+  background-color: #218838;
+}
+
 /* 投稿一覧 */
 .posts-list {
   list-style: none;
@@ -132,20 +152,28 @@
   gap: 0.5rem;
 }
 .tag-buttons button {
+  flex: 0 0 auto;
   padding: 0.4rem 1rem;
+  min-width: 4rem;
   border: 1px solid #ccc;
   background: #fff;
   border-radius: 4px;
   font-size: 0.875rem;
-  text-align: left;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color .2s;
+  transition: background-color 0.2s;
 }
 .tag-buttons button.active {
   background: #007acc;
   color: #fff;
   border-color: #007acc;
+}
+.tag-buttons button:hover {
+  background: #f0f0f0;
+}
+.tag-buttons button.active:hover {
+  background: #41c421; /* アクティブ状態のホバー時の色 */
+  color: #000;
 }
 
 .pagination {
@@ -174,40 +202,4 @@
   text-align: right;
   font-size: 0.875rem;
   margin-top: 1rem;
-}
-
-/* タグボタンコンテナを横並び＆折り返しに */
-.tag-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-/* ボタン幅を固定して、長いタグは省略表示 */
-.tag-buttons button {
-  /* flex: 0 0 auto にして、固定幅ではなく自動幅に */
-  flex: 0 0 auto;
-  /* 左右 padding で余白を確保 */
-  padding: 0.4rem 1rem;
-  /* 必要なら最小幅を設定 */
-  min-width: 4rem;
-  border: 1px solid #ccc;
-  background: #fff;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  white-space: nowrap;       /* 改行せずに一行で収める */
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.tag-buttons button.active {
-  background: #007acc;
-  color: #fff;
-  border-color: #007acc;
-}
-.tag-buttons button:hover {
-  background: #f0f0f0;
-}
-.tag-buttons button.active:hover {
-  background: #41c421; /* アクティブ状態のホバー時の色 */
-  color: #000;
 }

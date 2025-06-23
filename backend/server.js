@@ -3,6 +3,9 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config' ;
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -59,6 +62,32 @@ app.use(express.json());
       console.error('[/api/posts/:id] エラー:', err);
       res.status(500).json({ error: err.message });
     }
+  });
+
+  app.post('/api/login',async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    const row = await db.get(
+      'SELECT * FROM users WHERE email = ?',
+      email
+    );
+    // console.log('row:', row);
+    if (!row) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const match = await bcrypt.compare(password, row.password_hash);
+    if (!match) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const payload = { email: row.email, role: row.role };
+    const token  = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token , user: { email: row.email, role: row.role } });
+
   });
 
   // サーバー起動
