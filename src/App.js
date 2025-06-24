@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // import { AuthContext, AuthProvider } from '../contexts/AuthContext'
 import Layout     from './components/layout/Layout';
 import PostsList  from './pages/PostsList';
+import PostForm    from './pages/PostForm';
+import EditPost   from './pages/EditPost';
 import PostDetail from './pages/PostDetail';
 import Login      from './pages/Login';
 
@@ -14,8 +16,12 @@ export default function App() {
         {/* Layout を使うルート */}
         <Route path="/" element={<Layout />}>
           <Route index        element={<Navigate to="" replace />} />
-          <Route path="posts" element={<PostsList />} />
-          <Route path="posts/:id" element={<PostDetail />} />
+          <Route path="posts">
+           <Route index element={<PostsList />} />
+           <Route path="new" element={<PostForm />} />
+           <Route path=":id" element={<PostDetail />} />
+           <Route path=":id/edit" element={<EditPost />} />
+         </Route>
         </Route>
       </Routes>
     </Router>

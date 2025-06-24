@@ -203,3 +203,39 @@
   font-size: 0.875rem;
   margin-top: 1rem;
 }
+
+/* 編集・削除ボタン用コンテナ */
+.post-item-actions {
+  display: flex;
+  justify-content: flex-end;  /* 右寄せ */
+  gap: 0.5rem;
+  margin-top: 0.5rem;         /* 日付との距離 */
+}
+
+/* 共通ボタンスタイル */
+.post-item-actions .edit,
+.post-item-actions .delete {
+  padding: 0.3rem 0.6rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* 編集ボタン */
+.post-item-actions .edit {
+  background-color: #ffc107;
+  color: #fff;
+}
+.post-item-actions .edit:hover {
+  background-color: #e0a800;
+}
+
+/* 削除ボタン */
+.post-item-actions .delete {
+  background-color: #dc3545;
+  color: #fff;
+}
+.post-item-actions .delete:hover {
+  background-color: #c82333;
+}

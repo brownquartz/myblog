@@ -1,6 +1,7 @@
 {
   "name": "my-blog",
   "version": "0.1.0",
+  "proxy": "http://localhost:4000",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -9,7 +10,9 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.9.0",
     "buffer": "^6.0.3",
+    "cors": "^2.8.5",
     "gray-matter": "^4.0.3",
+    "marked": "^15.0.12",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
@@ -25,7 +28,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:4000",
   "eslintConfig": {
     "extends": [
       "react-app",
