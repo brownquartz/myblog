@@ -16,6 +16,20 @@
   flex: 1;
   text-align: center;
 }
+
+.header-logo a {
+  font-size: 1.75rem;        /* お好みで調整 */
+  font-weight: bold;
+  color: #6f42c1;            /* 紫系カラー */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.header-logo a:hover {
+  color: #563d7c;            /* ホバー時はもう少し暗めに */
+  text-decoration: none;
+}
+
 .header-auth {
   flex: 0 0 auto;
   position: absolute;
@@ -110,3 +124,4 @@
 .auth:hover {
   background-color: #0056b3;
 }
+
