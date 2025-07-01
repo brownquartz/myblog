@@ -57,7 +57,7 @@ export default function PostsList() {
       <div className="posts-wrapper">
         <h2>Posts List</h2>
         {/* 管理者だけに表示される「新規投稿」ボタン */}
-          {user?.role === 'admin' && (
+          {user && (
             <div className="create-post-button">
               <Link to="/posts/new">
                 <button>新規投稿を作成</button>

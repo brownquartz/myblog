@@ -35,6 +35,21 @@ import bcrypt from 'bcrypt';
     console.log('すでに Admin ユーザーは存在します。');
   }
 
+  const memberEmail = 'member@example.com';
+  const memberExisting = await db.get('SELECT * FROM users WHERE email = ?', memberEmail);
+  if (!memberExisting) {
+    const plain = 'member1234'; // 後で任意のパスワードに変えてください
+    const saltRounds = 10;
+    const hash = await bcrypt.hash(plain, saltRounds);
+    await db.run(
+      'INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)',
+      [memberEmail, hash, 'member']
+    );
+    console.log(`Member ユーザーを作成しました: ${memberEmail} / パスワード: ${plain}`);
+  } else {
+    console.log('すでに Member ユーザーは存在します。');
+  }
+
   await db.close();
   process.exit();
 })();

@@ -19,6 +19,9 @@ export default function PostDetail() {
       .catch(err => console.error(err));
   }, [id]);
 
+  const canEditOrDelete = (user.role === 'admin' || user.id === postDetail?.author_id);
+  console.log('userId:', user.id + ', postDetail?.author_id: ' + postDetail?.author_id);
+
   // 編集後に一覧へ戻る、削除処理もこちらで定義
   const handleDelete = async () => {
     if (!window.confirm('本当にこの投稿を削除しますか？')) return;
@@ -49,7 +52,7 @@ export default function PostDetail() {
         dangerouslySetInnerHTML={{ __html: marked(postDetail.content) }}
       />
 
-      {user?.role === 'admin' && (
+      {canEditOrDelete && (
         <div className="post-detail__actions">
           <button
             className="edit"
